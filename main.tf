@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_instance" "apche_ec2" {
   ami           = "ami-0182f373e66f89c85"
   instance_type = "t2.micro"
-  count=2
+
 
   subnet_id              = aws_subnet.public_subnet.id
   security_groups = [aws_security_group.apcheSG.id]
@@ -18,7 +18,7 @@ provisioner "local-exec" {
 
 
   tags = {
-    Name = var.ec2_name[count.index]
+    Name = var.ec2_name
   }
 }
 
