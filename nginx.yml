@@ -2,12 +2,12 @@
 - hosts: web
   become: yes
   tasks:
-    - name: Install NGINX
+    - name: Install nginx
       yum:
         name: nginx
         state: present
 
-    - name: Start NGINX service
+    - name: Start nginx
       service:
         name: nginx
         state: started
