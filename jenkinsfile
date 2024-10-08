@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id') 
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key') 
+        AWS_SESSION_TOKEN = credentials('aws_session_token') 
+    }
+    stages {
+        stage('create infrastructure') {
+            steps {
+                script {
+                    sh 'terraform init'
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+        stage('ansible code  ') {
+            steps {
+                script {
+                    
+                    def ec2_ip = sh(script: "terraform output -raw ec2_public_ip", returnStdout: true).trim()
+                    writeFile file: 'inventory', text: "[web]\n${ec2_ip} ansible_user=ec2-user ansible_ssh_private_key_file=credentials('ayakey.pem') "
+                    sh 'ansible-playbook -i hosts.ini install_nginx.yml'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            // Clean up any temporary files
+            sh 'rm -f hosts.ini'
+        }
+    }
+}
