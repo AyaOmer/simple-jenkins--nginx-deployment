@@ -17,10 +17,19 @@ pipeline {
         stage('Ansible Code') {
             steps {
                 script {
+                    // Get EC2 public IP from Terraform output
                     def ec2_ip = sh(script: "terraform output -raw ec2_public_ip", returnStdout: true).trim()
+                    
+                    // Check if IP address is valid
                     if (ec2_ip) {
-                      
+                        // Write the IP to the Ansible inventory
                         writeFile file: 'inventory', text: "[web]\n${ec2_ip} ansible_user=ec2-user ansible_ssh_private_key_file=/ayakey.pem"
+                        
+                        // Print inventory file for debugging
+                        echo "Inventory file content:\n"
+                        sh 'cat inventory'
+                        
+                        // Run Ansible playbook
                         sh 'ansible-playbook -i inventory nginx.yml'
                     } else {
                         error "Failed to retrieve EC2 public IP"
