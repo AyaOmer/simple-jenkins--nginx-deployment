@@ -23,7 +23,7 @@ pipeline {
                     // Check if IP address is valid
                     if (ec2_ip) {
                         // Write the IP to the Ansible inventory
-                        writeFile file: 'inventory', text: "[web]\n${ec2_ip} ansible_user=ec2-user ansible_ssh_private_key_file=/ayakey.pem"
+                        writeFile file: 'inventory', text: "[web]\n${ec2_ip}"
                         
                         // Print inventory file for debugging
                         echo "Inventory file content:\n"
