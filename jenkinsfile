@@ -75,10 +75,12 @@ pipeline {
                             export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                             terraform init
                             terraform destory  -auto-approve
-                            // terraform apply -auto-approve
+                            
                         '''
                     }
+                    //terraform apply -auto-approve
                 }
+
             }
         }
     //       stage('Ansible Code') {
